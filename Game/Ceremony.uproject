@@ -1,0 +1,16 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{836FE73B-484B-7C61-0C3B-3A8A4204B3D0}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "Ceremony",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
+		}
+	]
+}
