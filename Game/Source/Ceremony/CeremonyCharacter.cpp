@@ -50,6 +50,11 @@ ACeremonyCharacter::ACeremonyCharacter(const FObjectInitializer& ObjectInitializ
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+	mScene = SCENE_LOBBY;
+
+	GetTeleportToMeetingRoom();
+	GetTeleportToToLobby();
 }
 
 void ACeremonyCharacter::BeginPlay()
@@ -133,3 +138,79 @@ void ACeremonyCharacter::MoveRight(float Value)
 		AddMovementInput(Direction, Value);
 	}
 }
+
+AStaticMeshActor* ACeremonyCharacter::GetTeleportToMeetingRoom()
+{
+	if (mTeleportToMeetingRoom)
+	{
+		return mTeleportToMeetingRoom;
+	}
+
+	TArray<AActor*> Actors;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), "TeleportToMeetingRoom", Actors);
+	for (AActor* tmpActor : Actors)
+	{
+		mTeleportToMeetingRoom = Cast<AStaticMeshActor>(tmpActor);
+		return mTeleportToMeetingRoom;
+	}
+
+	return nullptr;
+}
+
+AStaticMeshActor* ACeremonyCharacter::GetTeleportToToLobby()
+{
+	TArray<AActor*> Actors;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), "TeleportToLobby", Actors);
+	for (AActor* tmpActor : Actors)
+	{
+		mTeleportToLobby = Cast<AStaticMeshActor>(tmpActor);
+		return mTeleportToLobby;
+	}
+
+	return nullptr;
+}
+
+void ACeremonyCharacter::TeleportToMeetingRoom()
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	if (mScene == SCENE_MEETING_ROOM)
+	{
+		return;
+	}
+
+	if (!mTeleportToLobby)
+	{
+		return;
+	}
+
+	FVector loc = mTeleportToLobby->GetActorLocation();
+	this->SetActorLocation(loc);
+	mScene = SCENE_MEETING_ROOM;
+}
+
+void ACeremonyCharacter::TeleportToLobby()
+{
+	if (!HasAuthority())
+	{
+		return;
+	}
+
+	if (mScene == SCENE_LOBBY)
+	{
+		return;
+	}
+
+	if (!mTeleportToMeetingRoom)
+	{
+		return;
+	}
+
+	FVector loc = mTeleportToMeetingRoom->GetActorLocation();
+	this->SetActorLocation(loc);
+	mScene = SCENE_LOBBY;
+}
+

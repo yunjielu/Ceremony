@@ -2,7 +2,9 @@
 
 #pragma once
 
+#include "Ceremony.h"
 #include "CoreMinimal.h"
+#include "Engine/StaticMeshActor.h"
 #include "GameFramework/Character.h"
 #include "CeremonyCharacter.generated.h"
 
@@ -69,5 +71,18 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	UFUNCTION(BlueprintCallable, Category = "Common")
+	void TeleportToMeetingRoom();
+	UFUNCTION(BlueprintCallable, Category = "Common")
+	void TeleportToLobby();
+
+	AStaticMeshActor* GetTeleportToMeetingRoom();
+	AStaticMeshActor* GetTeleportToToLobby();
+
+private:
+	SCENE_E						mScene;
+	AStaticMeshActor			*mTeleportToMeetingRoom;
+	AStaticMeshActor			*mTeleportToLobby;
 };
 
