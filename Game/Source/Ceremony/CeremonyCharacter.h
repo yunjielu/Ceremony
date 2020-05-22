@@ -4,6 +4,7 @@
 
 #include "Ceremony.h"
 #include "CoreMinimal.h"
+#include "InteractionSystem.h"
 #include "Engine/StaticMeshActor.h"
 #include "GameFramework/Character.h"
 #include "CeremonyCharacter.generated.h"
@@ -22,6 +23,7 @@ class ACeremonyCharacter : public ACharacter
 	class UCameraComponent* FollowCamera;
 public:
 	ACeremonyCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	virtual ~ACeremonyCharacter();
 
 	virtual void BeginPlay() override;
 
@@ -84,5 +86,7 @@ private:
 	SCENE_E						mScene;
 	AStaticMeshActor			*mTeleportToMeetingRoom;
 	AStaticMeshActor			*mTeleportToLobby;
+
+	AInteractionSystem			*mInteractionSystem;
 };
 

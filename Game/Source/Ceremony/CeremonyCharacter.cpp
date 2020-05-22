@@ -57,9 +57,20 @@ ACeremonyCharacter::ACeremonyCharacter(const FObjectInitializer& ObjectInitializ
 	GetTeleportToToLobby();
 }
 
+ACeremonyCharacter::~ACeremonyCharacter()
+{
+}
+
 void ACeremonyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FVector NewLocation = GetActorLocation() + FVector(0.f, 0.f, 0.f);
+	mInteractionSystem = GetWorld()->SpawnActor<AInteractionSystem>(AInteractionSystem::StaticClass(), NewLocation, FRotator::ZeroRotator);
+	if (mInteractionSystem)
+	{
+		mInteractionSystem->SetOwner(this);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -187,7 +198,21 @@ void ACeremonyCharacter::TeleportToMeetingRoom()
 		return;
 	}
 
+	TArray<AActor*> Actors;
+	mTeleportToLobby->GetAllChildActors(Actors, true);
+	UE_LOG(LogTemp, Warning, TEXT("name:%s"), *mTeleportToLobby->GetName());
+	for (AActor* tmpActor : Actors)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("sub name:%s"), *tmpActor->GetName());
+		
+		for (auto tmpTag: tmpActor->Tags)
+		{
+			// UE_LOG(LogTemp, Warning, TEXT("tag name:%s"), *tmpTag.ToString());
+		}
+	}
+
 	FVector loc = mTeleportToLobby->GetActorLocation();
+	loc.Y += 260;
 	this->SetActorLocation(loc);
 	mScene = SCENE_MEETING_ROOM;
 }
@@ -210,6 +235,7 @@ void ACeremonyCharacter::TeleportToLobby()
 	}
 
 	FVector loc = mTeleportToMeetingRoom->GetActorLocation();
+	loc.Y += 260;
 	this->SetActorLocation(loc);
 	mScene = SCENE_LOBBY;
 }
