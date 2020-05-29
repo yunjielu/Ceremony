@@ -85,7 +85,7 @@ void ACeremonyCharacter::BeginPlay()
 	}
 
 	PlayerManagerSubsystem* playerManager = GetGameInstance()->GetSubsystem<PlayerManagerSubsystem>();
-	playerManager->AddCharacter(this);
+	// playerManager->AddCharacter(this);
 
 	UE_LOG(LogTemp, Warning, TEXT("ACeremonyCharacter::BeginPlay, name:%s, unique id:[%d]"), *GetName(), GetUniqueID());
 }
@@ -94,7 +94,7 @@ void ACeremonyCharacter::BeginPlay()
 void ACeremonyCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	PlayerManagerSubsystem* playerManager = GetGameInstance()->GetSubsystem<PlayerManagerSubsystem>();
-	playerManager->RemoveCharacter(this->GetId());
+	// playerManager->RemoveCharacter(this->GetId());
 
 	UE_LOG(LogTemp, Warning, TEXT("ACeremonyCharacter::EndPlay, name:%s, unique id:[%d], reason:[%d]"), *GetName(), GetUniqueID(), EndPlayReason);
 }
