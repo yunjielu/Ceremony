@@ -1,6 +1,8 @@
 // Copyright (c) Improbable Worlds Ltd, All Rights Reserved
 
 #include "CeremonyCharacter.h"
+
+#include "PlayerManagerSubsystem.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -55,22 +57,46 @@ ACeremonyCharacter::ACeremonyCharacter(const FObjectInitializer& ObjectInitializ
 
 	GetTeleportToMeetingRoom();
 	GetTeleportToToLobby();
+
+	UE_LOG(LogTemp, Warning, TEXT("Constructor of ACeremonyCharacter, name:%s, unique id:[%d]"), *GetName(), GetUniqueID());
 }
 
 ACeremonyCharacter::~ACeremonyCharacter()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Deconstructor of ACeremonyCharacter, name:%s, unique id:[%d]"), *GetName(), GetUniqueID());
+}
+
+void ACeremonyCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 }
 
 void ACeremonyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FVector NewLocation = GetActorLocation() + FVector(0.f, 0.f, 0.f);
-	mInteractionSystem = GetWorld()->SpawnActor<AInteractionSystem>(AInteractionSystem::StaticClass(), NewLocation, FRotator::ZeroRotator);
-	if (mInteractionSystem)
+	if (HasAuthority())
 	{
-		mInteractionSystem->SetOwner(this);
+		mInteractionSystem = GetWorld()->SpawnActor<AInteractionSystem>(AInteractionSystem::StaticClass(), GetActorLocation(), FRotator::ZeroRotator);
+		if (mInteractionSystem)
+		{
+			mInteractionSystem->SetOwner(this);
+		}
 	}
+
+	PlayerManagerSubsystem* playerManager = GetGameInstance()->GetSubsystem<PlayerManagerSubsystem>();
+	playerManager->AddCharacter(this);
+
+	UE_LOG(LogTemp, Warning, TEXT("ACeremonyCharacter::BeginPlay, name:%s, unique id:[%d]"), *GetName(), GetUniqueID());
+}
+
+
+void ACeremonyCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	PlayerManagerSubsystem* playerManager = GetGameInstance()->GetSubsystem<PlayerManagerSubsystem>();
+	playerManager->RemoveCharacter(this->GetId());
+
+	UE_LOG(LogTemp, Warning, TEXT("ACeremonyCharacter::EndPlay, name:%s, unique id:[%d], reason:[%d]"), *GetName(), GetUniqueID(), EndPlayReason);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -240,3 +266,6 @@ void ACeremonyCharacter::TeleportToLobby()
 	mScene = SCENE_LOBBY;
 }
 
+void ACeremonyCharacter::OnIdNotify()
+{
+}

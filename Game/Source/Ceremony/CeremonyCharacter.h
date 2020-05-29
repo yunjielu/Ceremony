@@ -25,7 +25,10 @@ public:
 	ACeremonyCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	virtual ~ACeremonyCharacter();
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
@@ -75,6 +78,12 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	UFUNCTION(BlueprintCallable, Category = "Common")
+	FString GetId() const { return mId; }
+
+	UFUNCTION()
+	void OnIdNotify();
+
+	UFUNCTION(BlueprintCallable, Category = "Common")
 	void TeleportToMeetingRoom();
 	UFUNCTION(BlueprintCallable, Category = "Common")
 	void TeleportToLobby();
@@ -82,7 +91,13 @@ public:
 	AStaticMeshActor* GetTeleportToMeetingRoom();
 	AStaticMeshActor* GetTeleportToToLobby();
 
+	UFUNCTION(BlueprintCallable, Category = "Common")
+	AInteractionSystem*			GetInteractionSystem() { return mInteractionSystem; }
+
 private:
+	UPROPERTY(ReplicatedUsing = OnIdNotify)
+	FString						mId;
+
 	SCENE_E						mScene;
 	AStaticMeshActor			*mTeleportToMeetingRoom;
 	AStaticMeshActor			*mTeleportToLobby;

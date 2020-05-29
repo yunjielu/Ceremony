@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "InteractionSystem.generated.h"
 
+class ACeremonyCharacter;
+
 enum InteractionTypeE : int
 {
 	InteractionType_Flower = 0,
@@ -60,6 +62,20 @@ public:
 	void OnSentInteractionsNotify();
 	UFUNCTION()
 	void OnRecvInteractionsNotify();
+
+public:
+	void DoInteractions(ACeremonyCharacter* TargetCharacter, InteractionTypeE Type, int count = 1);
+
+	UFUNCTION(BlueprintCallable, Category = "DoInteractions")
+	void DoFlower(ACeremonyCharacter* TargetCharacter, int count = 1);
+	
+	UFUNCTION(BlueprintCallable, Category = "DoInteractions")
+	void DoLight(ACeremonyCharacter* TargetCharacter, int count = 1);
+	
+	UFUNCTION(BlueprintCallable, Category = "DoInteractions")
+	void DoApplause(ACeremonyCharacter* TargetCharacter, int count = 1);
+
+	void ReceiveInteractions(ACeremonyCharacter* SourceCharacter, InteractionTypeE Type, int count = 1);
 
 private:
 	UPROPERTY(ReplicatedUsing = OnSentInteractionsNotify)
