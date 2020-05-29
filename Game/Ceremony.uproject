@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{836FE73B-484B-7C61-0C3B-3A8A4204B3D0}",
+	"EngineAssociation": "{0902A595-44C7-C753-B2B7-26A8480A7BE3}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -11,6 +11,16 @@
 			"AdditionalDependencies": [
 				"Engine"
 			]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "WebBrowserWidget",
+			"Enabled": true
+		},
+		{
+			"Name": "SpatialGDK",
+			"Enabled": true
 		}
 	]
 }
